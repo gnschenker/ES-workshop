@@ -1,0 +1,8 @@
+build
+data
+logs
+obj
+bin
+*.suo
+*.user
+*.DotSettings
