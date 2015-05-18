@@ -6,6 +6,9 @@ This project uses [GetEventStore](https://geteventstore.com/) 3.0.3 for Windows 
 
 - Clone the Git repo to your local drive
 - Open a Powershell command prompt and navigate to the folder containing the cloned repo
+- Build the solution by invoking the following command
+```invoke-psake .\build.ps1 Test```
+
 - Run MongoDB as a Windows service by using this command
 
 ```$path = Get-Location
