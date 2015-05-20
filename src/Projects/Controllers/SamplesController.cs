@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
@@ -62,13 +63,20 @@ namespace Projects.Controllers
         [HttpPost]
         public void Step1(int sampleId, [FromBody]Step1Request req)
         {
-            _sampleApplicationService.When(new DoStep1 {Id = sampleId, Quantity = req.Quantity});
+            _sampleApplicationService.When(
+                new DoStep1
+                {
+                    Id = sampleId, 
+                    Quantity = req.Quantity,
+                    DueDate = req.DueDate
+                });
         }
     }
 
     public class Step1Request
     {
         public int Quantity { get; set; }
+        public DateTime DueDate { get; set; }
     }
 
     public class StartRequest

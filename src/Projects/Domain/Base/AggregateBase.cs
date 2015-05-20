@@ -2,26 +2,15 @@
 
 namespace Projects.Domain
 {
-    public abstract class AggregateBase<T> : IAggregate
-        where T : AggregateBase<T>
+    public abstract class AggregateBase<TState> : IAggregate
+        where TState : IState
     {
         private readonly IList<object> _uncommitedEvents = new List<object>();
+        protected TState State;
 
-        protected AggregateBase(IEnumerable<object> events = null)
+        protected AggregateBase(TState state)
         {
-            if (events == null) return;
-            foreach (var @event in events)
-                InternalApply(@event);
-        }
-
-        public IEnumerable<object> GetUncommittedEvents()
-        {
-            return _uncommitedEvents;
-        }
-
-        public void ClearUncommittedEvents()
-        {
-            _uncommitedEvents.Clear();
+            State = state;
         }
 
         protected void AddUncommitedEvent(object e)
@@ -32,16 +21,20 @@ namespace Projects.Domain
         protected void Apply(object e)
         {
             _uncommitedEvents.Add(e);
-            InternalApply(e);
+            State.Modify(e);
         }
 
-        private void InternalApply(object e)
+        IEnumerable<object> IAggregate.GetUncommittedEvents()
         {
-            Version++;
-            RedirectToWhen.InvokeEventOptional((T)this, e);
+            return _uncommitedEvents;
         }
 
-        public int Id { get; protected set; }
-        public int Version { get; private set; }
+        void IAggregate.ClearUncommittedEvents()
+        {
+            _uncommitedEvents.Clear();
+        }
+
+        int IAggregate.Id { get { return State.Id; } }
+        int IAggregate.Version { get { return State.Version; } }
     }
 }

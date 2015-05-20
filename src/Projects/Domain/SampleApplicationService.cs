@@ -29,7 +29,7 @@ namespace Projects.Domain
 
         public void When(DoStep1 cmd)
         {
-            Execute(cmd.Id, aggregate => aggregate.Step1(cmd.Quantity));
+            Execute(cmd.Id, aggregate => aggregate.Step1(cmd.Quantity, cmd.DueDate));
         }
 
         private void Execute(int id, Action<SampleAggregate> action)

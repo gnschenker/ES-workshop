@@ -8,7 +8,10 @@ namespace Projects.Domain
         public T Create<T>(IEnumerable<object> events) where T : class, IAggregate
         {
             if (typeof (T) == typeof (SampleAggregate))
-                return new SampleAggregate(events) as T;
+            {
+                var state = new SampleState(events);
+                return new SampleAggregate(state) as T;
+            }
 
             throw new ArgumentException("Unknown aggregate type");
         }

@@ -1,33 +1,32 @@
 ﻿using System;
-using System.Collections.Generic;
 using Projects.Contracts.Events;
 
 namespace Projects.Domain
 {
-    public class SampleAggregate : AggregateBase<SampleAggregate>
+    public class SampleAggregate : AggregateBase<SampleState>
     {
-        public SampleAggregate(IEnumerable<object> events) : base(events)
+        public SampleAggregate(SampleState state) : base(state)
         { }
 
         public void Start(int id, string name)
         {
-            if(Version>0)
+            if(State.Version>0)
                 throw new InvalidOperationException("Cannot start already started sample");
 
             Apply(new SampleStarted{Id = id, Name = name});
         }
 
-        public void Step1(int quantity)
+        public void Step1(int quantity, DateTime dueDate)
         {
-            if (Version == 0)
+            if (State.Version == 0)
                 throw new InvalidOperationException("Cannot execute step 1 on sample that is not started");
 
-            Apply(new Step1Executed { Id = Id, Quantity = quantity });
-        }
-
-        private void When(SampleStarted e)
-        {
-            Id = e.Id;
+            Apply(new Step1Executed
+            {
+                Id = State.Id,
+                Quantity = quantity,
+                DueDate = dueDate
+            });
         }
     }
 }
