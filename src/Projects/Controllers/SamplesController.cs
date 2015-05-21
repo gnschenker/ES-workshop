@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
+using Projects.Aspects;
 using Projects.Contracts.Commands;
 using Projects.Domain;
 using Projects.ReadModel.Providers;
