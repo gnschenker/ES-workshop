@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!--This file represents the results of running a test suite-->
+<test-results name="C:\dev\ProjectHealth\Projects\build\test\UnitTests.dll" total="2" errors="0" failures="0" not-run="0" inconclusive="0" ignored="0" skipped="0" invalid="0" date="2015-05-22" time="15:01:53">
+  <environment nunit-version="2.6.4.14350" clr-version="2.0.50727.8009" os-version="Microsoft Windows NT 6.2.9200.0" platform="Win32NT" cwd="C:\dev\ProjectHealth\Projects" machine-name="CM-LT-19" user="Gabriel" user-domain="CM-LT-19" />
+  <culture-info current-culture="en-US" current-uiculture="en-US" />
+  <test-suite type="Test Project" name="" executed="True" result="Success" success="True" time="1.124" asserts="0">
+    <results>
+      <test-suite type="Assembly" name="C:\dev\ProjectHealth\Projects\build\test\UnitTests.dll" executed="True" result="Success" success="True" time="0.475" asserts="0">
+        <results>
+          <test-suite type="Namespace" name="UnitTests" executed="True" result="Success" success="True" time="0.459" asserts="0">
+            <results>
+              <test-suite type="Namespace" name="ReadModel" executed="True" result="Success" success="True" time="0.459" asserts="0">
+                <results>
+                  <test-suite type="TestFixture" name="when_handling_sample_created_event" executed="True" result="Success" success="True" time="0.432" asserts="0">
+                    <results>
+                      <test-case name="UnitTests.ReadModel.when_handling_sample_created_event.it_should_create_a_new_item" executed="True" result="Success" success="True" time="0.421" asserts="3" />
+                    </results>
+                  </test-suite>
+                  <test-suite type="TestFixture" name="when_handling_step1_executed_event" executed="True" result="Success" success="True" time="0.017" asserts="0">
+                    <results>
+                      <test-case name="UnitTests.ReadModel.when_handling_step1_executed_event.it_should_update_existing_item" executed="True" result="Success" success="True" time="0.016" asserts="4" />
+                    </results>
+                  </test-suite>
+                </results>
+              </test-suite>
+            </results>
+          </test-suite>
+        </results>
+      </test-suite>
+      <test-suite type="Assembly" name="C:\dev\ProjectHealth\Projects\build\test\IntegrationTests.dll" executed="True" result="Inconclusive" success="False" time="0.018" asserts="0" />
+    </results>
+  </test-suite>
+</test-results>
