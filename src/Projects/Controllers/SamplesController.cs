@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 using Projects.Contracts.Commands;
 using Projects.Domain;
+using Projects.ReadModel.Providers;
 
 namespace Projects.Controllers
 {
@@ -12,42 +15,39 @@ namespace Projects.Controllers
     public class SamplesController : ApiController
     {
         private readonly ISampleApplicationService _sampleApplicationService;
+        private readonly ISamplesProvider _samplesProvider;
 
-        public SamplesController(ISampleApplicationService sampleApplicationService)
+        public SamplesController(ISampleApplicationService sampleApplicationService, ISamplesProvider samplesProvider)
         {
             _sampleApplicationService = sampleApplicationService;
+            _samplesProvider = samplesProvider;
         }
 
         [Route("")]
         [HttpGet]
-        public IEnumerable Get()
+        public async Task<IEnumerable> GetByName([FromUri]string name)
         {
-            return new object[]
+            var samples = await _samplesProvider.Get(name);
+            return samples.Select(sample => new
             {
-                new
-                {
-                    id = 1,
-                    name = "Sample 1",
-                    quantity = 11
-                },
-                new
-                {
-                    id = 2,
-                    name = "Sample 2",
-                    quantity = 15
-                }
-            };
+                id = sample.Id,
+                name = sample.Name,
+                quantity = sample.Quantity,
+                status = sample.Status.ToString()
+            });
         }
 
         [Route("{id}")]
         [HttpGet]
-        public object Get(int id)
+        public async Task<object> GetById(Guid id)
         {
+            var sample = await _samplesProvider.GetById(id);
             return new
             {
-                id = 1,
-                name = "Sample 1",
-                quantity = 15
+                id = id,
+                name = sample.Name,
+                quantity = sample.Quantity,
+                status = sample.Status.ToString()
             };
         }
 
@@ -74,10 +74,21 @@ namespace Projects.Controllers
 
         [Route("{sampleId}/approve")]
         [HttpPost]
-        public void Step1(Guid sampleId)
+        public void Approve(Guid sampleId)
         {
             _sampleApplicationService.When(
                 new ApproveSample
+                {
+                    SampleId = sampleId, 
+                });
+        }
+
+        [Route("{sampleId}/cancel")]
+        [HttpPost]
+        public void Cancel(Guid sampleId)
+        {
+            _sampleApplicationService.When(
+                new CancelSample
                 {
                     SampleId = sampleId, 
                 });

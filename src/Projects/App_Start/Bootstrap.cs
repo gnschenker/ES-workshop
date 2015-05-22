@@ -8,6 +8,7 @@ using log4net.Config;
 using Projects.Domain;
 using Projects.Infrastructure;
 using Projects.ReadModel.Observers;
+using Projects.ReadModel.Providers;
 using StructureMap;
 using WebApiContrib.IoC.StructureMap;
 
@@ -27,6 +28,7 @@ namespace Projects
                 init.For<IApplicationSettings>().Use<ApplicationSettings>();
                 init.For<IUniqueKeyGenerator>().Use<UniqueKeyGenerator>();
                 init.For<ISampleApplicationService>().Use<SampleApplicationService>();
+                init.For<ISamplesProvider>().Use<SamplesProvider>();
                 init.For<ILog>().Singleton().Use(c => LogManager.GetLogger("Projects"));
             });
             GlobalConfiguration.Configuration.DependencyResolver =

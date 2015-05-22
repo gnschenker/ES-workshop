@@ -18,4 +18,9 @@ namespace Projects.Contracts.Commands
     {
         public Guid SampleId { get; set; }
     }
+
+    public class CancelSample
+    {
+        public Guid SampleId { get; set; }
+    }
 }

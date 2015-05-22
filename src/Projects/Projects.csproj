@@ -115,11 +115,11 @@
     <Compile Include="Domain\Base\IRepository.cs" />
     <Compile Include="Domain\Base\RedirectToWhen.cs" />
     <Compile Include="Domain\Base\IState.cs" />
-    <Compile Include="Domain\SampleAggregate.cs" />
-    <Compile Include="Domain\SampleApplicationService.cs" />
+    <Compile Include="Domain\Samples\SampleAggregate.cs" />
+    <Compile Include="Domain\Samples\SampleApplicationService.cs" />
     <Compile Include="Contracts\Events\SampleEvents.cs" />
     <Compile Include="Contracts\Commands\SampleCommands.cs" />
-    <Compile Include="Domain\SampleState.cs" />
+    <Compile Include="Domain\Samples\SampleState.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -127,6 +127,7 @@
     <Compile Include="Infrastructure\EventsDispatcher.cs" />
     <Compile Include="Infrastructure\GesRepository.cs" />
     <Compile Include="Infrastructure\IProjectionWriterFactory.cs" />
+    <Compile Include="Infrastructure\IProvider.cs" />
     <Compile Include="Infrastructure\MessageExtensions.cs" />
     <Compile Include="Infrastructure\MongoDbAtomicWriterFactory.cs" />
     <Compile Include="Infrastructure\MongoDbProjectionWriter.cs" />
@@ -135,6 +136,8 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Infrastructure\IProjectionWriter.cs" />
     <Compile Include="ReadModel\Observers\SamplesObserver.cs" />
+    <Compile Include="Infrastructure\MongoDbProvider.cs" />
+    <Compile Include="ReadModel\Providers\SamplesProvider.cs" />
     <Compile Include="ReadModel\Views\SampleView.cs" />
   </ItemGroup>
   <ItemGroup />

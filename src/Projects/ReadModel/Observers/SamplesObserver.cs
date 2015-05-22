@@ -41,4 +41,12 @@ namespace Projects.ReadModel.Observers
                 x.Status = SampleStatus.Approved;
             });
         }
+
+        public async Task When(SampleCancelled e)
+        {
+            await _writer.Update(e.Id, x =>
+            {
+                x.Status = SampleStatus.Cancelled;
+            });
+        }
     }}

@@ -41,5 +41,10 @@ namespace Projects.Domain
                 Id = State.Id
             });
         }
+
+        public void Cancel()
+        {
+            Apply(new SampleCancelled{Id = State.Id});
+        }
     }
 }

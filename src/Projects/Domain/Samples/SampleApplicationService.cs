@@ -8,17 +8,15 @@ namespace Projects.Domain
         Guid When(StartSample cmd);
         void When(DoStep1 cmd);
         void When(ApproveSample cmd);
+        void When(CancelSample cmd);
     }
 
     public class SampleApplicationService : ISampleApplicationService
     {
         private readonly IRepository _repository;
-        private readonly IUniqueKeyGenerator _uniqueKeyGenerator;
-
-        public SampleApplicationService(IRepository repository, IUniqueKeyGenerator uniqueKeyGenerator)
+        public SampleApplicationService(IRepository repository)
         {
             _repository = repository;
-            _uniqueKeyGenerator = uniqueKeyGenerator;
         }
 
         public Guid When(StartSample cmd)
@@ -36,6 +34,11 @@ namespace Projects.Domain
         public void When(ApproveSample cmd)
         {
             Execute(cmd.SampleId, aggregate => aggregate.Approve());
+        }
+
+        public void When(CancelSample cmd)
+        {
+            Execute(cmd.SampleId, aggregate => aggregate.Cancel());
         }
 
         private void Execute(Guid id, Action<SampleAggregate> action)

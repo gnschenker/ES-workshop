@@ -15,4 +15,6 @@ namespace UnitTests
 
         protected virtual void Given() { }
     }
+
+    public class ThenAttribute : TestAttribute { }
 }

@@ -19,4 +19,9 @@ namespace Projects.Contracts.Events
     {
         public Guid Id { get; set; }
     }
+
+    public class SampleCancelled
+    {
+        public Guid Id { get; set; }
+    }
 }

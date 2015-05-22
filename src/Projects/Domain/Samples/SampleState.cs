@@ -28,6 +28,11 @@ namespace Projects.Domain
             Status = SampleStatus.Approved;
         }
 
+        private void When(SampleCancelled e)
+        {
+            Status = SampleStatus.Cancelled;
+        }
+
         public void Modify(object @event)
         {
             Version++;
