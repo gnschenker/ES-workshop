@@ -12,26 +12,38 @@ namespace Projects.Infrastructure
     public class EventsDispatcher
     {
         private readonly ILog _log;
+        private readonly IApplicationSettings _applicationSettings;
         private Dictionary<Type, Info[]> _dictionary = new Dictionary<Type, Info[]>();
         private EventStoreAllCatchUpSubscription _subscription;
 
-        public EventsDispatcher(ILog log)
+        public EventsDispatcher(ILog log, IApplicationSettings applicationSettings)
         {
             _log = log;
+            _applicationSettings = applicationSettings;
         }
 
         public void Start(IEventStoreConnection connection, IEnumerable<object> observers)
         {
             WireUpObservers(observers);
-            var credentials = new UserCredentials("admin", "changeit");
+            var credentials = new UserCredentials(_applicationSettings.GesUserName, _applicationSettings.GesPassword);
             var lastCheckpoint = Position.Start;
 
             _subscription = connection.SubscribeToAllFrom(lastCheckpoint, false,
                 EventAppeared,
-                subs => { /* started */ },
-                (subs, reason, exception) => { /* subscription dropped */ },
+                OnLiveProcessingStarted,
+                OnSubscriptionDropped,
                 credentials
                 );
+        }
+
+        private void OnLiveProcessingStarted(EventStoreCatchUpSubscription subscription)
+        {
+            _log.Debug("Live processing of events started");
+        }
+
+        private void OnSubscriptionDropped(EventStoreCatchUpSubscription subscription, SubscriptionDropReason reason, Exception exception)
+        {
+            _log.Error(string.Format("Event subscription stopped. Reason: {0}", reason), exception);
         }
 
         private void EventAppeared(EventStoreCatchUpSubscription subscription, ResolvedEvent re)

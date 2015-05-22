@@ -38,7 +38,7 @@ Run the application. You can use the Postman REST client for Google Chrome to te
 
 The first endpoint expects a body
 
-```{ name: "Some smaple name" }```
+```{ name: "Some sample name" }```
 
 whilst the second endpoint expects a body like
 

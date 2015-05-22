@@ -1,8 +1,10 @@
-﻿namespace Projects.Domain
+﻿using System;
+
+namespace Projects.Domain
 {
     public interface IState
     {
-        int Id { get; }
+        Guid Id { get; }
         int Version { get; }
         void Modify(object e);
     }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Projects.Domain
 {
@@ -34,7 +35,7 @@ namespace Projects.Domain
             _uncommitedEvents.Clear();
         }
 
-        int IAggregate.Id { get { return State.Id; } }
+        Guid IAggregate.Id { get { return State.Id; } }
         int IAggregate.Version { get { return State.Version; } }
     }
 }

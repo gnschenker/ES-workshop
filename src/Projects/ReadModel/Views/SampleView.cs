@@ -1,10 +1,12 @@
 ﻿using System;
+using Projects.Domain;
 
 namespace Projects.ReadModel.Views
 {
     public class SampleView
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
+        public SampleStatus Status { get; set; }
         public string Name { get; set; }
         public int Quantity { get; set; }
         public DateTime? DueDate { get; set; }

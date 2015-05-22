@@ -60,6 +60,7 @@
     <Reference Include="StructureMap">
       <HintPath>..\packages\structuremap.2.6.4.1\lib\net40\StructureMap.dll</HintPath>
     </Reference>
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Net.Http.Formatting, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -81,6 +82,7 @@
     </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Services" />
+    <Reference Include="System.XML" />
     <Reference Include="WebApiContrib.IoC.StructureMap">
       <HintPath>..\packages\WebApiContrib.IoC.StructureMap.0.9.5.0\lib\net40\WebApiContrib.IoC.StructureMap.dll</HintPath>
     </Reference>
@@ -88,6 +90,7 @@
   <ItemGroup>
     <Content Include="Global.asax" />
     <Content Include="packages.config" />
+    <Content Include="log4net.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -102,8 +105,8 @@
     <Compile Include="..\CommonAssemblyInfo.cs">
       <Link>Properties\CommonAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="App_Start\ApplicationSettings.cs" />
     <Compile Include="App_Start\Bootstrap.cs" />
-    <Compile Include="Contracts\Events\Step1Executed.cs" />
     <Compile Include="Controllers\SamplesController.cs" />
     <Compile Include="Domain\Base\AggregateBase.cs" />
     <Compile Include="Domain\AggregateFactory.cs" />
@@ -111,12 +114,11 @@
     <Compile Include="Domain\Base\IAggregateFactory.cs" />
     <Compile Include="Domain\Base\IRepository.cs" />
     <Compile Include="Domain\Base\RedirectToWhen.cs" />
-    <Compile Include="Contracts\Commands\DoStep1.cs" />
     <Compile Include="Domain\Base\IState.cs" />
     <Compile Include="Domain\SampleAggregate.cs" />
     <Compile Include="Domain\SampleApplicationService.cs" />
-    <Compile Include="Contracts\Events\SampleStarted.cs" />
-    <Compile Include="Contracts\Commands\StartSample.cs" />
+    <Compile Include="Contracts\Events\SampleEvents.cs" />
+    <Compile Include="Contracts\Commands\SampleCommands.cs" />
     <Compile Include="Domain\SampleState.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

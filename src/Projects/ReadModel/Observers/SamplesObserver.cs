@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Projects.Contracts.Events;
+using Projects.Domain;
 using Projects.Infrastructure;
 using Projects.ReadModel.Views;
 
@@ -20,6 +21,7 @@ namespace Projects.ReadModel.Observers
             {
                 Id = e.Id,
                 Name = e.Name,
+                Status = SampleStatus.Draft
             });
         }
 
@@ -29,6 +31,14 @@ namespace Projects.ReadModel.Observers
             {
                 x.Quantity = e.Quantity;
                 x.DueDate = e.DueDate;
+            });
+        }
+
+        public async Task When(SampleApproved e)
+        {
+            await _writer.Update(e.Id, x =>
+            {
+                x.Status = SampleStatus.Approved;
             });
         }
     }}

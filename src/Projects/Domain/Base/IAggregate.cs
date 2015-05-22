@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Projects.Domain
 {
     public interface IAggregate
     {
-        int Id { get; }
+        Guid Id { get; }
         int Version { get; }
         IEnumerable<object> GetUncommittedEvents();
         void ClearUncommittedEvents();

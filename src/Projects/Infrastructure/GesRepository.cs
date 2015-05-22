@@ -17,7 +17,7 @@ namespace Projects.Infrastructure
             _factory = factory;
         }
 
-        public T GetById<T>(int id) where T : class, IAggregate
+        public T GetById<T>(Guid id) where T : class, IAggregate
         {
             var events = new List<object>();
             StreamEventsSlice currentSlice;
@@ -54,12 +54,12 @@ namespace Projects.Infrastructure
             aggregate.ClearUncommittedEvents();
         }
 
-        private string GetStreamName<T>(int id)
+        private string GetStreamName<T>(Guid id)
         {
             return GetStreamName(typeof(T), id);
         }
 
-        private string GetStreamName(Type type, int id)
+        private string GetStreamName(Type type, Guid id)
         {
             return string.Format("{0}-{1}", type.Name, id);
         }

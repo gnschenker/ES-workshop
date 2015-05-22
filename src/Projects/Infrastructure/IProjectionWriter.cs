@@ -5,7 +5,7 @@ namespace Projects.Infrastructure
 {
     public interface IProjectionWriter<TView> where TView : class
     {
-        Task Add(int id, TView item);
-        Task Update(int id, Action<TView> update);
+        Task Add(Guid id, TView item);
+        Task Update(Guid id, Action<TView> update);
     }
 }

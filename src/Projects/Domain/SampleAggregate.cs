@@ -8,7 +8,7 @@ namespace Projects.Domain
         public SampleAggregate(SampleState state) : base(state)
         { }
 
-        public void Start(int id, string name)
+        public void Start(Guid id, string name)
         {
             if(State.Version>0)
                 throw new InvalidOperationException("Cannot start already started sample");
@@ -20,12 +20,25 @@ namespace Projects.Domain
         {
             if (State.Version == 0)
                 throw new InvalidOperationException("Cannot execute step 1 on sample that is not started");
+            if (State.Status != SampleStatus.Draft)
+                throw new InvalidOperationException(string.Format("Cannot execute step 1 on sample that is in the following status: {0}", State.Status));
 
             Apply(new Step1Executed
             {
                 Id = State.Id,
                 Quantity = quantity,
                 DueDate = dueDate
+            });
+        }
+
+        public void Approve()
+        {
+            if (State.Status != SampleStatus.Draft)
+                throw new InvalidOperationException(string.Format("Cannot approve a sample that is in the following status: {0}", State.Status));
+            
+            Apply(new SampleApproved
+            {
+                Id = State.Id
             });
         }
     }

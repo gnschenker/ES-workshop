@@ -1,0 +1,1 @@
+.\EventStore\EventStore.ClusterNode.exe --db .\Data\EventStore\Projects

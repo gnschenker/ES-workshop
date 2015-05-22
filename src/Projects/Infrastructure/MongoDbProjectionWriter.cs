@@ -19,16 +19,16 @@ namespace Projects.Infrastructure
             _databaseName = databaseName;
         }
 
-        public async Task Add(int id, T item)
+        public async Task Add(Guid id, T item)
         {
             var collection = GetCollection();
             await collection.InsertOneAsync(item);
         }
 
-        public async Task Update(int id, Action<T> update)
+        public async Task Update(Guid id, Action<T> update)
         {
             var builder = Builders<T>.Filter;
-            var filter = builder.Eq("_id", new BsonInt32(id));
+            var filter = builder.Eq("_id", id);
             var collection = GetCollection();
             var existingItem = await collection.Find(filter).FirstOrDefaultAsync();
 

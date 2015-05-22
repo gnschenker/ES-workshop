@@ -1,8 +1,10 @@
-﻿using System.Configuration;
+﻿using System;
+using System.IO;
 using System.Net;
 using System.Web.Http;
 using EventStore.ClientAPI;
 using log4net;
+using log4net.Config;
 using Projects.Domain;
 using Projects.Infrastructure;
 using Projects.ReadModel.Observers;
@@ -14,50 +16,57 @@ namespace Projects
     public static class Bootstrap
     {
         private static IRepository _repository;
-        private static ILog _log;
+        private static EventsDispatcher _dispatcher;
 
         public static void Init()
         {
-            var endpoint = new IPEndPoint(IPAddress.Loopback, 1113);
-            var connection = EventStoreConnection.Create(endpoint);
-            connection.ConnectAsync().Wait();
-            var factory = new AggregateFactory();
-            _repository = new GesRepository(connection, factory);
-
+            InitLogging();
             ObjectFactory.Initialize(init =>
             {
                 init.For<IRepository>().Use(c => _repository);
                 init.For<IApplicationSettings>().Use<ApplicationSettings>();
                 init.For<IUniqueKeyGenerator>().Use<UniqueKeyGenerator>();
                 init.For<ISampleApplicationService>().Use<SampleApplicationService>();
-                init.For<ILog>().Use(c => LogManager.GetLogger("Projects"));
+                init.For<ILog>().Singleton().Use(c => LogManager.GetLogger("Projects"));
             });
             GlobalConfiguration.Configuration.DependencyResolver =
                 new StructureMapResolver(ObjectFactory.Container);
 
-            InitEventsDispatcher(endpoint, ObjectFactory.GetInstance<IApplicationSettings>());
+            var applicationSettings = ObjectFactory.GetInstance<IApplicationSettings>();
+            InitGetEventStore(applicationSettings);
+            InitEventsDispatcher(applicationSettings, ObjectFactory.GetInstance<ILog>());
         }
 
-        private static void InitEventsDispatcher(IPEndPoint endpoint, IApplicationSettings settings)
+        private static void InitLogging()
         {
+            XmlConfigurator.Configure(new FileInfo(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "log4net.config")));
+        }
+
+        private static void InitGetEventStore(IApplicationSettings applicationSettings)
+        {
+            var endpoint = GetEventStoreEndpoint(applicationSettings);
             var connection = EventStoreConnection.Create(endpoint);
             connection.ConnectAsync().Wait();
-            var dispatcher = new EventsDispatcher(_log);
-            var factory = new MongoDbAtomicWriterFactory(settings.MongoDbConnectionString, settings.MongoDbName);
-            var observers = new ObserverRegistry().GetObservers(factory);
-            dispatcher.Start(connection, observers);
+            var factory = new AggregateFactory();
+            _repository = new GesRepository(connection, factory);
         }
-    }
 
-    public interface IApplicationSettings
-    {
-        string MongoDbConnectionString { get; }
-        string MongoDbName { get; }
-    }
+        private static void InitEventsDispatcher(IApplicationSettings applicationSettings, ILog logger)
+        {
+            var endpoint = GetEventStoreEndpoint(applicationSettings);
+            var connection = EventStoreConnection.Create(endpoint);
+            connection.ConnectAsync().Wait();
+            _dispatcher = new EventsDispatcher(logger, applicationSettings);
+            var factory = new MongoDbAtomicWriterFactory(applicationSettings.MongoDbConnectionString, applicationSettings.MongoDbName);
+            var observers = new ObserverRegistry().GetObservers(factory);
+            _dispatcher.Start(connection, observers);
+        }
 
-    public class ApplicationSettings : IApplicationSettings
-    {
-        public string MongoDbConnectionString { get; private set; }
-        public string MongoDbName { get; private set; }
+        private static IPEndPoint GetEventStoreEndpoint(IApplicationSettings applicationSettings)
+        {
+            var ipAddress = IPAddress.Parse(applicationSettings.GesIpAddress);
+            var endpoint = new IPEndPoint(ipAddress, applicationSettings.GesTcpIpPort);
+            return endpoint;
+        }
     }
 }

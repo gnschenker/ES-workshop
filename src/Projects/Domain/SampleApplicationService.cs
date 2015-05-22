@@ -5,8 +5,9 @@ namespace Projects.Domain
 {
     public interface ISampleApplicationService
     {
-        int When(StartSample cmd);
+        Guid When(StartSample cmd);
         void When(DoStep1 cmd);
+        void When(ApproveSample cmd);
     }
 
     public class SampleApplicationService : ISampleApplicationService
@@ -20,19 +21,24 @@ namespace Projects.Domain
             _uniqueKeyGenerator = uniqueKeyGenerator;
         }
 
-        public int When(StartSample cmd)
+        public Guid When(StartSample cmd)
         {
-            var id = _uniqueKeyGenerator.GetId<SampleAggregate>();
+            var id = Guid.NewGuid();
             Execute(id, aggregate => aggregate.Start(id, cmd.Name));
             return id;
         } 
 
         public void When(DoStep1 cmd)
         {
-            Execute(cmd.Id, aggregate => aggregate.Step1(cmd.Quantity, cmd.DueDate));
+            Execute(cmd.SampleId, aggregate => aggregate.Step1(cmd.Quantity, cmd.DueDate));
         }
 
-        private void Execute(int id, Action<SampleAggregate> action)
+        public void When(ApproveSample cmd)
+        {
+            Execute(cmd.SampleId, aggregate => aggregate.Approve());
+        }
+
+        private void Execute(Guid id, Action<SampleAggregate> action)
         {
             var aggregate = _repository.GetById<SampleAggregate>(id);
             action(aggregate);

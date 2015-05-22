@@ -61,14 +61,25 @@ namespace Projects.Controllers
 
         [Route("{sampleId}/step1")]
         [HttpPost]
-        public void Step1(int sampleId, [FromBody]Step1Request req)
+        public void Step1(Guid sampleId, [FromBody]Step1Request req)
         {
             _sampleApplicationService.When(
                 new DoStep1
                 {
-                    Id = sampleId, 
+                    SampleId = sampleId, 
                     Quantity = req.Quantity,
                     DueDate = req.DueDate
+                });
+        }
+
+        [Route("{sampleId}/approve")]
+        [HttpPost]
+        public void Step1(Guid sampleId)
+        {
+            _sampleApplicationService.When(
+                new ApproveSample
+                {
+                    SampleId = sampleId, 
                 });
         }
     }
