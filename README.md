@@ -6,6 +6,7 @@ This project uses
 - ASP.NET Web API using attribute routing
 - [GetEventStore](https://geteventstore.com/) 3.0.3 for Windows 
 - [MongoDB](https://www.mongodb.org/) 3.0.3 (Windows 64-bit 2009 R2+)
+- [ElasticSearch](https://www.elastic.co/downloads/elasticsearch)
 - StructureMap for DI
 - PostSharp for AOP to provide things like logging
 - Psake to build and test the solution
@@ -24,6 +25,7 @@ You need to have the following installed on your system
 - Execute the batch file `ClickToBuild.cmd` located in the folder containing the cloned repository to build and test the solution. 
 - Alternatively open a PowerShell command prompt and navigate to the folder containing the cloned repository. Build the solution by invoking the following command `.\psake\psake.ps1 .\default.ps1 Test`
 
+##MongoDB
 - Run MongoDB as a Windows service by using this command
 
 ```
@@ -39,7 +41,14 @@ You need to have the following installed on your system
 
 ```
 
+##GetEventStore
 - Execute the batch file `RunGetEventStore.cmd` in the root folder of the repository to run GetEventStore. This will start GES with the data directory `..\Data\EventStore\Projects` listening at the default tcp-ip port 1113 and http port 2113. The default username is equal to `admin` and the default password is `changeit`.
+
+##ElasticSearch
+- Make sure you have Java installed. Either JRE or JDK
+- Make sure you have the environment variable JAVA_HOME set (in my case C:\Program Files (x86)\Java\jre7)
+- Unzip the ElasticSearch zip file.
+- Run ElasticSearch (double click the elasticsearch.bat in the bin folder of ElasticSearch)
 
 #Admin GES
 Open a browser and navigate to `localhost:2113/web/index.html`. Enter the credentials when asked (`admin`/`changeit`). Navigate to the `Stream Browser` tab. You should see a list of streams. Click on the one whose events you want to see, e.g. `SampleAggregate-<ID>` where `<ID>` is a Guid representing the ID of the aggregate instance. The list of events in the stream will be displayed starting with the most recent event.
