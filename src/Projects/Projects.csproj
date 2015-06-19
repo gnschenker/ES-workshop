@@ -39,12 +39,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Dapper">
+      <HintPath>..\packages\Dapper.1.42\lib\net45\Dapper.dll</HintPath>
+    </Reference>
     <Reference Include="EventStore.ClientAPI">
       <HintPath>..\packages\EventStore.Client.3.0.2\lib\net40\EventStore.ClientAPI.dll</HintPath>
     </Reference>
     <Reference Include="log4net">
       <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="MongoDB.Bson">
       <HintPath>..\packages\MongoDB.Bson.2.0.0\lib\net45\MongoDB.Bson.dll</HintPath>
     </Reference>
@@ -72,6 +76,7 @@
       <HintPath>..\packages\structuremap.2.6.4.1\lib\net40\StructureMap.dll</HintPath>
     </Reference>
     <Reference Include="System.Configuration" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Net.Http.Formatting, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -144,6 +149,8 @@
     <Compile Include="Infrastructure\MessageExtensions.cs" />
     <Compile Include="Infrastructure\MongoDbAtomicWriterFactory.cs" />
     <Compile Include="Infrastructure\MongoDbProjectionWriter.cs" />
+    <Compile Include="Infrastructure\SqlServerProjectionWriter.cs" />
+    <Compile Include="Infrastructure\SqlServerAtomicWriterFactory.cs" />
     <Compile Include="ReadModel\Observers\ObserverRegistry.cs" />
     <Compile Include="Infrastructure\UniqueKeyGenerator.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />

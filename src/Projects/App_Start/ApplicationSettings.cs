@@ -12,6 +12,7 @@ namespace Projects
         string GesPassword { get; }
         string MongoDbConnectionString { get; }
         string MongoDbName { get; }
+        string SqlServerConnectionString { get; }
     }
 
     public class ApplicationSettings : IApplicationSettings
@@ -25,6 +26,7 @@ namespace Projects
             GesPassword = FromAppSetting("GesPassword");
             MongoDbConnectionString = FromAppSetting("MongoDbConnectionString");
             MongoDbName = FromAppSetting("MongoDbName");
+            SqlServerConnectionString = FromConnectionStrings("ReadModel");
         }
 
         public string GesIpAddress { get; private set; }
@@ -34,6 +36,7 @@ namespace Projects
         public string GesPassword { get; private set; }
         public string MongoDbConnectionString { get; private set; }
         public string MongoDbName { get; private set; }
+        public string SqlServerConnectionString { get; private set; }
 
         protected static string FromConnectionStrings(string name)
         {

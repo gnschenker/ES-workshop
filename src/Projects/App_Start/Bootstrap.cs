@@ -41,7 +41,7 @@ namespace Projects
                 Prefix = "9f05a9e6-ebc5-49bd-90fa-0c8689e7fbbf.CM.Heartbeat.DEV.IterationZero"
             };
 
-            StatsdClient.Metrics.Configure(metricsConfig);
+            Metrics.Configure(metricsConfig);
 
             var applicationSettings = ObjectFactory.GetInstance<IApplicationSettings>();
             InitGetEventStore(applicationSettings);
@@ -68,7 +68,13 @@ namespace Projects
             var connection = EventStoreConnection.Create(endpoint);
             connection.ConnectAsync().Wait();
             _dispatcher = new EventsDispatcher(logger, applicationSettings);
+
+            // use MongoDB for the read model
             var factory = new MongoDbAtomicWriterFactory(applicationSettings.MongoDbConnectionString, applicationSettings.MongoDbName);
+
+            // if you want to use SQL Server for the read model then use this factory instead
+            //var factory = new SqlServerAtomicWriterFactory(applicationSettings.SqlServerConnectionString);
+
             var observers = new ObserverRegistry().GetObservers(factory);
             _dispatcher.Start(connection, observers);
         }
