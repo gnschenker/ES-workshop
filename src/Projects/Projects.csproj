@@ -142,6 +142,8 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Domain\Base\IUniqueKeyGenerator.cs" />
+    <Compile Include="Infrastructure\ElasticSearchAtomicWriterFactory.cs" />
+    <Compile Include="Infrastructure\ElasticSearchProjectionWriter.cs" />
     <Compile Include="Infrastructure\EventsDispatcher.cs" />
     <Compile Include="Infrastructure\GesRepository.cs" />
     <Compile Include="Infrastructure\IProjectionWriterFactory.cs" />

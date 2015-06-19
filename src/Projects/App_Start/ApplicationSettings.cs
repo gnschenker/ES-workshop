@@ -13,6 +13,7 @@ namespace Projects
         string MongoDbConnectionString { get; }
         string MongoDbName { get; }
         string SqlServerConnectionString { get; }
+        string ElasticSearchBaseUrl { get; }
     }
 
     public class ApplicationSettings : IApplicationSettings
@@ -27,6 +28,7 @@ namespace Projects
             MongoDbConnectionString = FromAppSetting("MongoDbConnectionString");
             MongoDbName = FromAppSetting("MongoDbName");
             SqlServerConnectionString = FromConnectionStrings("ReadModel");
+            ElasticSearchBaseUrl = FromAppSetting("ElasticSearchBaseUrl");
         }
 
         public string GesIpAddress { get; private set; }
@@ -37,6 +39,7 @@ namespace Projects
         public string MongoDbConnectionString { get; private set; }
         public string MongoDbName { get; private set; }
         public string SqlServerConnectionString { get; private set; }
+        public string ElasticSearchBaseUrl { get; private set; }
 
         protected static string FromConnectionStrings(string name)
         {

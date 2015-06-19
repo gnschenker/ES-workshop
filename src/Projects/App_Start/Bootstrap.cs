@@ -75,6 +75,9 @@ namespace Projects
             // if you want to use SQL Server for the read model then use this factory instead
             //var factory = new SqlServerAtomicWriterFactory(applicationSettings.SqlServerConnectionString);
 
+            // if you want to use ElasticSearch for the read model then use this factory instead
+            //var factory = new ElasticSearchAtomicWriterFactory(applicationSettings.ElasticSearchBaseUrl);
+
             var observers = new ObserverRegistry().GetObservers(factory);
             _dispatcher.Start(connection, observers);
         }
