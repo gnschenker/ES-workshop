@@ -5,7 +5,7 @@ properties{
 	$srcDir = "$baseDir\src"
     $buildDir = "$baseDir\build\"
 	$packagesDir = "$buildDir\$config\"
-	$slnFile = "$baseDir\src\Projects.sln"
+	$slnFile = "$baseDir\src\IterationZero.sln"
 	
 	$testDir = "$buildDir\test"
 	$testCopyIgnorePath = "_ReSharper"

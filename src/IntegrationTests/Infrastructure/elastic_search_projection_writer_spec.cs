@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using Newtonsoft.Json;
 using NUnit.Framework;
-using Projects.Infrastructure;
+using SampleProject.Infrastructure;
 
 namespace IntegrationTests.Infrastructure
 {

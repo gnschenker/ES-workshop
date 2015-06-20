@@ -1,1 +1,1 @@
-.\EventStore\EventStore.ClusterNode.exe --db .\Data\EventStore\Projects
+.\EventStore\EventStore.ClusterNode.exe --db .\Data\EventStore\IterationZero

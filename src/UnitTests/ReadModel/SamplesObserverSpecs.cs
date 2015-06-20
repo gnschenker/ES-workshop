@@ -2,13 +2,11 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using Projects;
-using Projects.Contracts.Events;
-using Projects.Infrastructure;
-using Projects.ReadModel.Observers;
-using Projects.ReadModel.Providers;
-using Projects.ReadModel.Views;
 using Rhino.Mocks;
+using SampleProject.Contracts.Events;
+using SampleProject.Infrastructure;
+using SampleProject.ReadModel.Observers;
+using SampleProject.ReadModel.Views;
 using Is = NUnit.Framework.Is;
 
 namespace UnitTests.ReadModel

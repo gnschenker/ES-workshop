@@ -3,7 +3,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using Dapper;
 using NUnit.Framework;
-using Projects.Infrastructure;
+using SampleProject.Infrastructure;
 
 namespace IntegrationTests.Infrastructure
 {

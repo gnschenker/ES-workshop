@@ -26,7 +26,9 @@ You need to have the following installed on your system
 - Alternatively open a PowerShell command prompt and navigate to the folder containing the cloned repository. Build the solution by invoking the following command `.\psake\psake.ps1 .\default.ps1 Test`
 
 ##MongoDB
-- Run MongoDB as a Windows service by using this command
+Please create a sub-folder `logs\mongodb` and a folder `data\mongodb` in the root folder of the repository 
+Either run MongoDB from the command line or run it as a service
+- Open a Powershell console, navigate to the root of the repository and run MongoDB by using this command
 
 ```
 
@@ -35,7 +37,21 @@ You need to have the following installed on your system
     echo "   destination: file" >> .\MongoDb\mongod.cfg
     echo "   path: $path\logs\mongodb\mongod.log" >> .\MongoDb\mongod.cfg
     echo "storage:" >> .\MongoDb\mongod.cfg
-    echo "   dbPath: C:\dev\ProjectHealth\Projects\data\mongodb" >> .\MongoDb\mongod.cfg
+    echo "   dbPath: $path\data\mongodb" >> .\MongoDb\mongod.cfg
+    &"$path\mongodb\mongod.exe" --config=$path\mongodb\mongod.cfg 
+
+```
+
+- or, open a Powershell console, navigate to the root of the repository and run MongoDB as a Windows service by using this command
+
+```
+
+    $path = Get-Location
+    echo "systemLog:" > .\MongoDb\mongod.cfg
+    echo "   destination: file" >> .\MongoDb\mongod.cfg
+    echo "   path: $path\logs\mongodb\mongod.log" >> .\MongoDb\mongod.cfg
+    echo "storage:" >> .\MongoDb\mongod.cfg
+    echo "   dbPath: $path\data\mongodb" >> .\MongoDb\mongod.cfg
     sc.exe create MongoDB binPath= "$path\mongodb\mongod.exe --service --config=$path\mongodb\mongod.cfg"  DisplayName= "MongoDB" start= "auto" 
     Start-Service MongoDB
 
