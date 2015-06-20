@@ -2,6 +2,6 @@ namespace SampleProject.Infrastructure
 {
     public interface IProjectionWriterFactory
     {
-        IProjectionWriter<TView> GetProjectionWriter<TView>() where TView : class, new();
+        IProjectionWriter<TId, TView> GetProjectionWriter<TId, TView>() where TView : class, new();
     }
 }

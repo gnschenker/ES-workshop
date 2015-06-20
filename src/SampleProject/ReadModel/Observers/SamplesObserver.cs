@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using SampleProject.Contracts.Events;
 using SampleProject.Domain.Samples;
 using SampleProject.Infrastructure;
@@ -8,9 +9,9 @@ namespace SampleProject.ReadModel.Observers
 {
     public class SamplesObserver
     {
-        private readonly IProjectionWriter<SampleView> _writer;
+        private readonly IProjectionWriter<Guid, SampleView> _writer;
 
-        public SamplesObserver(IProjectionWriter<SampleView> writer)
+        public SamplesObserver(IProjectionWriter<Guid, SampleView> writer)
         {
             _writer = writer;
         }

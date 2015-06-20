@@ -8,9 +8,9 @@ namespace SampleProject.Infrastructure
             _connectionString = connectionString;
         }
 
-        public IProjectionWriter<TView> GetProjectionWriter<TView>() where TView : class, new()
+        public IProjectionWriter<TId, TView> GetProjectionWriter<TId, TView>() where TView : class, new()
         {
-            return new SqlServerProjectionWriter<TView>(_connectionString);
+            return new SqlServerProjectionWriter<TId, TView>(_connectionString);
         }
     }
 }

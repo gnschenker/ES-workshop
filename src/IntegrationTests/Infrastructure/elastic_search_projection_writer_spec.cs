@@ -9,14 +9,14 @@ namespace IntegrationTests.Infrastructure
 {
     public class elastic_search_projection_writer_spec : SpecificationBase
     {
-        protected ElasticSearchProjectionWriter<Foo> sut;
+        protected ElasticSearchProjectionWriter<Guid, Foo> sut;
         protected Foo foo;
         protected Guid id;
         protected const string baseUrl = "http://localhost:9200";
 
         protected override void Given()
         {
-            sut = new ElasticSearchProjectionWriter<Foo>(baseUrl);
+            sut = new ElasticSearchProjectionWriter<Guid, Foo>(baseUrl);
             id = Guid.NewGuid();
             foo = new Foo { Id = id, Name = "Foo name", DueDate = DateTime.Now, Counter = 4 };
         }

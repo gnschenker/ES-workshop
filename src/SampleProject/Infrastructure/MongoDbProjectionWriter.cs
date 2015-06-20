@@ -4,7 +4,7 @@ using MongoDB.Driver;
 
 namespace SampleProject.Infrastructure
 {
-    public class MongoDbProjectionWriter<T> : IProjectionWriter<T>
+    public class MongoDbProjectionWriter<TId, T> : IProjectionWriter<TId, T>
            where T : class
     {
         private readonly string _connectionString;
@@ -17,13 +17,13 @@ namespace SampleProject.Infrastructure
             _databaseName = databaseName;
         }
 
-        public async Task Add(Guid id, T item)
+        public async Task Add(TId id, T item)
         {
             var collection = GetCollection();
             await collection.InsertOneAsync(item);
         }
 
-        public async Task Update(Guid id, Action<T> update)
+        public async Task Update(TId id, Action<T> update)
         {
             var builder = Builders<T>.Filter;
             var filter = builder.Eq("_id", id);

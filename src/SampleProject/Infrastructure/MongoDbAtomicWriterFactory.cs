@@ -11,9 +11,9 @@ namespace SampleProject.Infrastructure
             _dbName = dbName;
         }
 
-        public IProjectionWriter<TView> GetProjectionWriter<TView>() where TView : class, new()
+        public IProjectionWriter<TId, TView> GetProjectionWriter<TId, TView>() where TView : class, new()
         {
-            return new MongoDbProjectionWriter<TView>(_connectionString, _dbName);
+            return new MongoDbProjectionWriter<TId, TView>(_connectionString, _dbName);
         }
     }
 }

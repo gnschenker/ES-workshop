@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 
 namespace SampleProject.Infrastructure
 {
-    public interface IProjectionWriter<TView> where TView : class
+    public interface IProjectionWriter<in TId, TView> where TView : class
     {
-        Task Add(Guid id, TView item);
-        Task Update(Guid id, Action<TView> update);
+        Task Add(TId id, TView item);
+        Task Update(TId id, Action<TView> update);
     }
 }

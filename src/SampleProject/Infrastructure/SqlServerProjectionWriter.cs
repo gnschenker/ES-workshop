@@ -7,7 +7,7 @@ using Dapper;
 
 namespace SampleProject.Infrastructure
 {
-    public class SqlServerProjectionWriter<T> : IProjectionWriter<T>
+    public class SqlServerProjectionWriter<TId, T> : IProjectionWriter<TId, T>
         where T : class
     {
         private readonly string _connectionString;
@@ -31,7 +31,7 @@ namespace SampleProject.Infrastructure
             _updateSql = string.Format("UPDATE {0} SET {1} WHERE Id=@id", type.Name, updates);
         }
 
-        public async Task Add(Guid id, T item)
+        public async Task Add(TId id, T item)
         {
             using (var conn = new SqlConnection(_connectionString))
             {
@@ -44,7 +44,7 @@ namespace SampleProject.Infrastructure
             }
         }
 
-        public async Task Update(Guid id, Action<T> update)
+        public async Task Update(TId id, Action<T> update)
         {
             using (var conn = new SqlConnection(_connectionString))
             {

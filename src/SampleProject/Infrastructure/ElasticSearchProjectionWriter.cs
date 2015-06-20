@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace SampleProject.Infrastructure
 {
-    public class ElasticSearchProjectionWriter<T> : IProjectionWriter<T> where T: class
+    public class ElasticSearchProjectionWriter<TId, T> : IProjectionWriter<TId, T> where T : class
     {
         private readonly string _baseUrl;
         private readonly HttpClient _client;
@@ -19,28 +19,28 @@ namespace SampleProject.Infrastructure
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public async Task Add(Guid id, T item)
+        public async Task Add(TId id, T item)
         {
             var uri = GetUri(id);
-            await PutItem(uri, id, item);
+            await PutItem(uri, item);
         }
 
-        public async Task Update(Guid id, Action<T> update)
+        public async Task Update(TId id, Action<T> update)
         {
             var uri = GetUri(id);
             var body = _client.GetStringAsync(uri).Result;
             var indexItem = JsonConvert.DeserializeObject<IndexItem<T>>(body);
             var item = indexItem._source;
             update(item);
-            await PutItem(uri, id, item);
+            await PutItem(uri, item);
         }
 
-        private Uri GetUri(Guid id)
+        private Uri GetUri(TId id)
         {
             return new Uri(string.Format("{0}/external/{1}?pretty", _baseUrl, id));
         }
 
-        private async Task PutItem(Uri uri, Guid id, T item)
+        private async Task PutItem(Uri uri, T item)
         {
             var json = JsonConvert.SerializeObject(item);
             var content = new StringContent(json, Encoding.UTF8, "application/json");

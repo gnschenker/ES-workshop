@@ -22,21 +22,21 @@ namespace IntegrationTests.Infrastructure
     */
     public class sql_projection_writer_spec : SpecificationBase
     {
-        protected SqlServerProjectionWriter<Foo> sut;
+        protected SqlServerProjectionWriter<Guid, Foo> sut;
         protected Foo foo;
         protected Guid id;
         protected const string connectionString = @"server=.\SQLEXPRESS2012;database=test;integrated security=true";
 
         protected override void Given()
         {
-            sut = new SqlServerProjectionWriter<Foo>(connectionString);
+            sut = new SqlServerProjectionWriter<Guid, Foo>(connectionString);
             id = Guid.NewGuid();
             foo = new Foo { Id = id, Name = "Foo name", DueDate = DateTime.Now, Counter = 4 };
         }
     }
 
     [Explicit("Environment dependent")]
-    public class when_adding_a_new_item : sql_projection_writer_spec
+    public class when_adding_a_new_item_to_sql_table : sql_projection_writer_spec
     {
         protected override void When()
         {
@@ -59,7 +59,7 @@ namespace IntegrationTests.Infrastructure
     }
 
     [Explicit("Environment dependent")]
-    public class when_updating_an_existing_item : sql_projection_writer_spec
+    public class when_updating_an_existing_item_in_sql_table : sql_projection_writer_spec
     {
         private DateTime newDueDate;
         private string newName;
@@ -97,13 +97,5 @@ namespace IntegrationTests.Infrastructure
                 Assert.That(item.Counter, Is.EqualTo(newCounter));
             }
         }
-    }
-
-    public class Foo
-    {
-        public Guid Id { get; set; }
-        public string Name { get; set; }
-        public DateTime DueDate { get; set; }
-        public int Counter { get; set; }
     }
 }

@@ -19,7 +19,7 @@ namespace UnitTests.ReadModel
         protected override void Given()
         {
             Samples = new Dictionary<Guid, SampleView>();
-            var writer = MockRepository.GenerateMock<IProjectionWriter<SampleView>>();
+            var writer = MockRepository.GenerateMock<IProjectionWriter<Guid, SampleView>>();
             writer.Stub(x => x.Add(Arg<Guid>.Is.Anything, Arg<SampleView>.Is.Anything))
                 .WhenCalled(mi => Samples[(Guid)mi.Arguments[0]] = (SampleView)mi.Arguments[1])
                 .Return(Task.Delay(0));
