@@ -21,7 +21,7 @@ You need to have the following installed on your system
 
 #Instructions
 
-- Clone the Git repository to your local drive ([https://github.com/asiemer/ProjectHeartbeat-IterationZero](https://github.com/asiemer/ProjectHeartbeat-IterationZero))
+- Clone the Git repository to your local drive ([https://github.com/gnschenker/ES-workshop](https://github.com/gnschenker/ES-workshop))
 - Execute the batch file `ClickToBuild.cmd` located in the folder containing the cloned repository to build and test the solution. 
 - Alternatively open a PowerShell command prompt and navigate to the folder containing the cloned repository. Build the solution by invoking the following command `.\psake\psake.ps1 .\default.ps1 Test`
 
