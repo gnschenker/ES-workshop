@@ -96,23 +96,23 @@ namespace IntegrationTests.Infrastructure
         : elastic_search_projection_writer_spec
     {
         private readonly string species = "mouse" + Guid.NewGuid();
-        private ElasticSearchProjectionWriter<string, Baz> sut;
+        private ElasticSearchProjectionWriter<string, Baz> _sut;
 
         protected override void Given()
         {
             base.Given();
-            sut = new ElasticSearchProjectionWriter<string, Baz>(baseUrl);
+            _sut = new ElasticSearchProjectionWriter<string, Baz>(baseUrl);
         }
 
         protected override void When()
         {
-            sut.UpdateEnforcingNew(species, b =>
+            _sut.UpdateEnforcingNew(species, b =>
             {
                 b.Id = species;
                 b.AverageWeight += 0.25m;
                 b.Counter++;
             }).Wait();
-            sut.UpdateEnforcingNew(species, b =>
+            _sut.UpdateEnforcingNew(species, b =>
             {
                 b.Id = species;
                 b.AverageWeight += 0.25m;

@@ -111,25 +111,25 @@ namespace IntegrationTests.Infrastructure
     public class when_update_enforce_new_item_to_sql_server
         : sql_projection_writer_spec
     {
-        private readonly string species = "Mouse" + Guid.NewGuid();
-        private SqlServerProjectionWriter<string, Baz2> sut;
+        private readonly string _species = "Mouse" + Guid.NewGuid();
+        private SqlServerProjectionWriter<string, Baz2> _sut;
         protected override void Given()
         {
             base.Given();
-            sut = new SqlServerProjectionWriter<string, Baz2>(connectionString);
+            _sut = new SqlServerProjectionWriter<string, Baz2>(connectionString);
         }
 
         protected override void When()
         {
-            sut.UpdateEnforcingNew(species, b =>
+            _sut.UpdateEnforcingNew(_species, b =>
             {
-                b.Id = species;
+                b.Id = _species;
                 b.AverageWeight += 0.25;
                 b.Counter++;
             }).Wait();
-            sut.UpdateEnforcingNew(species, b =>
+            _sut.UpdateEnforcingNew(_species, b =>
             {
-                b.Id = species;
+                b.Id = _species;
                 b.AverageWeight += 0.25;
                 b.Counter++;
             }).Wait();
@@ -140,9 +140,9 @@ namespace IntegrationTests.Infrastructure
         {
             using (var conn = new SqlConnection(connectionString))
             {
-                var item = conn.Query<Baz2>(string.Format("Select * from Baz2 where id='{0}'", species)).SingleOrDefault();
+                var item = conn.Query<Baz2>(string.Format("Select * from Baz2 where id='{0}'", _species)).SingleOrDefault();
                 Assert.That(item, Is.Not.Null);
-                Assert.That(item.Id, Is.EqualTo(species));
+                Assert.That(item.Id, Is.EqualTo(_species));
                 Assert.That(item.Counter, Is.EqualTo(2));
                 Assert.That(item.AverageWeight, Is.EqualTo(0.5));
             }
