@@ -5,17 +5,17 @@ using SampleProject.Infrastructure;
 
 namespace IntegrationTests.Infrastructure
 {
-    public class mongodb_projection_writer_spec<T> : SpecificationBase
+    public class mongodb_projection_writer_spec<TId, T> : SpecificationBase
         where T: class
     {
-        protected MongoDbProjectionWriter<Guid, T> sut;
+        protected MongoDbProjectionWriter<TId, T> sut;
         protected Guid id;
         protected const string connectionString = @"mongodb://localhost:27017";
         protected const string databaseName = @"~~integration-tests~~";
 
         protected override void Given()
         {
-            sut = new MongoDbProjectionWriter<Guid, T>(connectionString, databaseName);
+            sut = new MongoDbProjectionWriter<TId, T>(connectionString, databaseName);
             id = Guid.NewGuid();
         }
 
@@ -29,7 +29,7 @@ namespace IntegrationTests.Infrastructure
     }
 
     [Explicit("Environment dependent")]
-    public class when_adding_a_new_item_to_mongo_collection : mongodb_projection_writer_spec<Foo>
+    public class when_adding_a_new_item_to_mongo_collection : mongodb_projection_writer_spec<Guid, Foo>
     {
         private Foo foo;
 
@@ -61,10 +61,10 @@ namespace IntegrationTests.Infrastructure
 
     [Explicit("Environment dependent")]
     public class when_adding_a_new_item_with_id_of_type_string_to_mongo_collection 
-        : mongodb_projection_writer_spec<Bar>
+        : mongodb_projection_writer_spec<string, Bar>
     {
         private Bar bar;
-        private const string species = "Mouse";
+        private readonly string species = "Mouse" + Guid.NewGuid();
 
         protected override void Given()
         {
@@ -72,15 +72,9 @@ namespace IntegrationTests.Infrastructure
             bar = new Bar { Id = species, AverageWeight = 1.25m, Counter = 12 };
         }
 
-        [TearDown]
-        public void TearDown()
-        {
-            GetCollection().Database.DropCollectionAsync("Bar").Wait();
-        }
-
         protected override void When()
         {
-            sut.Add(id, bar).Wait();
+            sut.Add(species, bar).Wait();
         }
 
         [Then]
@@ -97,10 +91,39 @@ namespace IntegrationTests.Infrastructure
         }
     }
 
-    public class Bar
+    [Explicit("Environment dependent")]
+    public class when_update_enforce_new_item_to_mongo_collection
+        : mongodb_projection_writer_spec<string, Baz>
     {
-        public string Id { get; set; }
-        public decimal AverageWeight { get; set; }
-        public int Counter { get; set; }
+        private readonly string species = "Mouse" + Guid.NewGuid();
+
+        protected override void When()
+        {
+            sut.UpdateEnforcingNew(species, b =>
+            {
+                b.Id = species;
+                b.AverageWeight += 0.25m;
+                b.Counter++;
+            }).Wait();
+            sut.UpdateEnforcingNew(species, b =>
+            {
+                b.Id = species;
+                b.AverageWeight += 0.25m;
+                b.Counter++;
+            }).Wait();
+        }
+
+        [Then]
+        public void it_should_work()
+        {
+            var coll = GetCollection();
+            var builder = Builders<Baz>.Filter;
+            var filter = builder.Eq("_id", species);
+            var item = coll.Find(filter).FirstOrDefaultAsync().Result;
+            Assert.That(item, Is.Not.Null);
+            Assert.That(item.Id, Is.EqualTo(species));
+            Assert.That(item.AverageWeight, Is.EqualTo(0.5m));
+            Assert.That(item.Counter, Is.EqualTo(2));
+        }
     }
 }

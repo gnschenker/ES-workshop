@@ -62,7 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Infrastructure\elastic_search_projection_writer_spec.cs" />
-    <Compile Include="Infrastructure\Foo.cs" />
+    <Compile Include="Infrastructure\Views.cs" />
     <Compile Include="Infrastructure\mongodb_projection_writer_spec.cs" />
     <Compile Include="Infrastructure\sql_projection_writer_spec.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -151,6 +151,7 @@
     <Compile Include="Infrastructure\MessageExtensions.cs" />
     <Compile Include="Infrastructure\MongoDbAtomicWriterFactory.cs" />
     <Compile Include="Infrastructure\MongoDbProjectionWriter.cs" />
+    <Compile Include="Infrastructure\ProjectionWriterExtensions.cs" />
     <Compile Include="Infrastructure\SqlServerProjectionWriter.cs" />
     <Compile Include="Infrastructure\SqlServerAtomicWriterFactory.cs" />
     <Compile Include="ReadModel\Observers\ObserverRegistry.cs" />

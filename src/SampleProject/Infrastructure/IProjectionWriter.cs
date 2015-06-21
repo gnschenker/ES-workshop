@@ -5,7 +5,6 @@ namespace SampleProject.Infrastructure
 {
     public interface IProjectionWriter<in TId, TView> where TView : class
     {
-        Task Add(TId id, TView item);
-        Task Update(TId id, Action<TView> update);
+        Task<TView> AddOrUpdate(TId key, Func<TView> addFactory, Func<TView, TView> update, bool probablyExists = true);
     }
 }

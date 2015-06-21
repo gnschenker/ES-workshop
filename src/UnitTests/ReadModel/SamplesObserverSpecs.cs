@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using Rhino.Mocks;
 using SampleProject.Contracts.Events;
 using SampleProject.Infrastructure;
 using SampleProject.ReadModel.Observers;
@@ -11,6 +10,27 @@ using Is = NUnit.Framework.Is;
 
 namespace UnitTests.ReadModel
 {
+    public class ProjectionWriterMock :IProjectionWriter<Guid, SampleView>
+    {
+        private readonly Dictionary<Guid, SampleView> _samples = new Dictionary<Guid, SampleView>();
+
+        public ProjectionWriterMock(Dictionary<Guid, SampleView> samples)
+        {
+            _samples = samples;
+        }
+
+        public async Task<SampleView> AddOrUpdate(Guid key, Func<SampleView> addFactory, Func<SampleView, SampleView> update, bool probablyExists = true)
+        {
+            if (addFactory != null)
+            {
+                _samples[key] = addFactory();
+                return await Task<SampleView>.Run(() => _samples[key]);
+            }
+            var item = _samples[key];
+            return await Task<SampleView>.Run(() => update(item));
+        }
+    }
+
     public class SamplesObserverSpecs : SpecificationBase
     {
         protected SamplesObserver Sut;
@@ -19,17 +39,7 @@ namespace UnitTests.ReadModel
         protected override void Given()
         {
             Samples = new Dictionary<Guid, SampleView>();
-            var writer = MockRepository.GenerateMock<IProjectionWriter<Guid, SampleView>>();
-            writer.Stub(x => x.Add(Arg<Guid>.Is.Anything, Arg<SampleView>.Is.Anything))
-                .WhenCalled(mi => Samples[(Guid)mi.Arguments[0]] = (SampleView)mi.Arguments[1])
-                .Return(Task.Delay(0));
-            writer.Stub(x => x.Update(Arg<Guid>.Is.Anything, Arg<Action<SampleView>>.Is.Anything))
-                .WhenCalled(mi =>
-                {
-                    var sample = Samples[(Guid) mi.Arguments[0]];
-                    ((Action<SampleView>) mi.Arguments[1])(sample);
-                })
-                .Return(Task.Delay(0));
+            var writer = new ProjectionWriterMock(Samples);
             Sut = new SamplesObserver(writer);
         }
     }
@@ -70,15 +80,15 @@ namespace UnitTests.ReadModel
         private Step1Executed _ev;
         private DateTime _dueDate;
 
-        protected override async void Given()
+        protected override void Given()
         {
             base.Given();
             _sampleId = Guid.NewGuid();
-            await Sut.When(new SampleStarted
+            Sut.When(new SampleStarted
             {
                 Id = _sampleId,
                 Name = "Foo 2"
-            });
+            }).Wait();
             _dueDate = new DateTime(2015, 5, 20);
             _ev = new Step1Executed
             {
@@ -88,9 +98,9 @@ namespace UnitTests.ReadModel
             };
         }
 
-        protected override async void When()
+        protected override void When()
         {
-            await Sut.When(_ev);
+            Sut.When(_ev).Wait();
         }
 
         [Then]

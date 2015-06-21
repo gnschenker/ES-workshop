@@ -8,7 +8,7 @@ using SampleProject.Infrastructure;
 namespace IntegrationTests.Infrastructure
 {
     /*
-     Script to generate table Foo
+     Script to generate table Foo and Baz
      Note: Primary key is expected to be named "Id"
      
      create table Foo(
@@ -17,6 +17,14 @@ namespace IntegrationTests.Infrastructure
         DueDate datetime,
         Counter int,
         constraint pk_foo primary key(id)
+    )
+    GO
+     
+     create table Baz(
+        Id nvarchar(50) not null,
+        AverageWeight decimal,
+        Counter int,
+        constraint pk_baz primary key(id)
     )
     GO
     */
@@ -95,6 +103,48 @@ namespace IntegrationTests.Infrastructure
                 Assert.That(item.DueDate.ToShortDateString(), Is.EqualTo(newDueDate.ToShortDateString()));
                 Assert.That(item.DueDate.ToShortTimeString(), Is.EqualTo(newDueDate.ToShortTimeString()));
                 Assert.That(item.Counter, Is.EqualTo(newCounter));
+            }
+        }
+    }
+
+    [Explicit("Environment dependent")]
+    public class when_update_enforce_new_item_to_sql_server
+        : sql_projection_writer_spec
+    {
+        private readonly string species = "Mouse" + Guid.NewGuid();
+        private SqlServerProjectionWriter<string, Baz2> sut;
+        protected override void Given()
+        {
+            base.Given();
+            sut = new SqlServerProjectionWriter<string, Baz2>(connectionString);
+        }
+
+        protected override void When()
+        {
+            sut.UpdateEnforcingNew(species, b =>
+            {
+                b.Id = species;
+                b.AverageWeight += 0.25;
+                b.Counter++;
+            }).Wait();
+            sut.UpdateEnforcingNew(species, b =>
+            {
+                b.Id = species;
+                b.AverageWeight += 0.25;
+                b.Counter++;
+            }).Wait();
+        }
+
+        [Then]
+        public void it_should_work()
+        {
+            using (var conn = new SqlConnection(connectionString))
+            {
+                var item = conn.Query<Baz2>(string.Format("Select * from Baz2 where id='{0}'", species)).SingleOrDefault();
+                Assert.That(item, Is.Not.Null);
+                Assert.That(item.Id, Is.EqualTo(species));
+                Assert.That(item.Counter, Is.EqualTo(2));
+                Assert.That(item.AverageWeight, Is.EqualTo(0.5));
             }
         }
     }

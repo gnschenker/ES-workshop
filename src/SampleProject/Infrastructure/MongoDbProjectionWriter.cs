@@ -17,24 +17,43 @@ namespace SampleProject.Infrastructure
             _databaseName = databaseName;
         }
 
-        public async Task Add(TId id, T item)
+        public async Task<T> AddOrUpdate(TId key, Func<T> addFactory, Func<T, T> update, bool probablyExists = true)
+        {
+            if (probablyExists)
+            {
+                return await Update(key, addFactory, update);
+            }
+            var item = addFactory();
+            await Add(item);
+            return item;
+        }
+
+        private async Task Add(T item)
         {
             var collection = GetCollection();
             await collection.InsertOneAsync(item);
         }
 
-        public async Task Update(TId id, Action<T> update)
+        private async Task<T> Update(TId id, Func<T> addFactory, Func<T, T> update)
         {
             var builder = Builders<T>.Filter;
             var filter = builder.Eq("_id", id);
             var collection = GetCollection();
             var existingItem = await collection.Find(filter).FirstOrDefaultAsync();
+            if (existingItem != null)
+            {
+                update(existingItem);
+                await collection.ReplaceOneAsync(filter, existingItem);
+                return existingItem;
+            }
 
-            if (existingItem == null)
+            if (addFactory == null) 
                 throw new InvalidOperationException("Item does not exists");
 
-            update(existingItem);
-            await collection.ReplaceOneAsync(filter, existingItem);
+            var item = addFactory();
+            update(item);
+            await collection.InsertOneAsync(item);
+            return item;
         }
 
         private IMongoCollection<T> GetCollection()

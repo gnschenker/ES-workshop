@@ -19,20 +19,48 @@ namespace SampleProject.Infrastructure
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public async Task Add(TId id, T item)
+        public async Task<T> AddOrUpdate(TId key, Func<T> addFactory, Func<T, T> update, bool probablyExists = true)
+        {
+            if (probablyExists)
+            {
+                return await Update(key, addFactory, update);
+            }
+            var item = addFactory();
+            await Add(key, item);
+            return item;
+        }
+
+        private async Task Add(TId id, T item)
         {
             var uri = GetUri(id);
             await PutItem(uri, item);
         }
 
-        public async Task Update(TId id, Action<T> update)
+        private async Task<T> Update(TId id, Func<T> addFactory, Func<T, T> update)
         {
             var uri = GetUri(id);
-            var body = _client.GetStringAsync(uri).Result;
-            var indexItem = JsonConvert.DeserializeObject<IndexItem<T>>(body);
-            var item = indexItem._source;
+            T item = null;
+            try
+            {
+                var body = _client.GetStringAsync(uri).Result;
+                var indexItem = JsonConvert.DeserializeObject<IndexItem<T>>(body);
+                item = indexItem._source;
+            }
+            catch { }
+            if (item != null)
+            {
+                update(item);
+                await PutItem(uri, item);
+                return item;
+            }
+
+            if (addFactory == null)
+                throw new InvalidOperationException("Item does not exists");
+
+            item = addFactory();
             update(item);
             await PutItem(uri, item);
+            return item;
         }
 
         private Uri GetUri(TId id)

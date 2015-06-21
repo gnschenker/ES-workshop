@@ -21,13 +21,13 @@ namespace IntegrationTests.Infrastructure
             foo = new Foo { Id = id, Name = "Foo name", DueDate = DateTime.Now, Counter = 4 };
         }
 
-        protected Foo GetItem()
+        protected T GetItem<TId, T>(TId id)
         {
             var client = new HttpClient();
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            var uri = new Uri(string.Format("{0}/foo/external/{1}?pretty", baseUrl, id));
+            var uri = new Uri(string.Format("{0}/{2}/external/{1}?pretty", baseUrl, id, typeof(T).Name.ToLower()));
             var body = client.GetStringAsync(uri).Result;
-            var indexItem = JsonConvert.DeserializeObject<IndexItem<Foo>>(body);
+            var indexItem = JsonConvert.DeserializeObject<IndexItem<T>>(body);
             var item = indexItem._source;
             return item;
         }
@@ -44,7 +44,7 @@ namespace IntegrationTests.Infrastructure
         [Then]
         public void it_should_add_item_to_index()
         {
-            var item = GetItem();
+            var item = GetItem<Guid, Foo>(id);
             Assert.That(item, Is.Not.Null);
             Assert.That(item.Name, Is.EqualTo(foo.Name));
             Assert.That(item.DueDate.ToShortDateString(), Is.EqualTo(foo.DueDate.ToShortDateString()));
@@ -82,12 +82,52 @@ namespace IntegrationTests.Infrastructure
         [Then]
         public void it_should_work()
         {
-            var item = GetItem();
+            var item = GetItem<Guid, Foo>(id);
             Assert.That(item, Is.Not.Null);
             Assert.That(item.Name, Is.EqualTo(newName));
             Assert.That(item.DueDate.ToShortDateString(), Is.EqualTo(newDueDate.ToShortDateString()));
             Assert.That(item.DueDate.ToShortTimeString(), Is.EqualTo(newDueDate.ToShortTimeString()));
             Assert.That(item.Counter, Is.EqualTo(newCounter));
+        }
+    }
+
+    [Explicit("Environment dependent")]
+    public class when_update_enforce_new_item_to_elastic_search
+        : elastic_search_projection_writer_spec
+    {
+        private readonly string species = "mouse" + Guid.NewGuid();
+        private ElasticSearchProjectionWriter<string, Baz> sut;
+
+        protected override void Given()
+        {
+            base.Given();
+            sut = new ElasticSearchProjectionWriter<string, Baz>(baseUrl);
+        }
+
+        protected override void When()
+        {
+            sut.UpdateEnforcingNew(species, b =>
+            {
+                b.Id = species;
+                b.AverageWeight += 0.25m;
+                b.Counter++;
+            }).Wait();
+            sut.UpdateEnforcingNew(species, b =>
+            {
+                b.Id = species;
+                b.AverageWeight += 0.25m;
+                b.Counter++;
+            }).Wait();
+        }
+
+        [Then]
+        public void it_should_work()
+        {
+            var item = GetItem<string, Baz>(species);
+            Assert.That(item, Is.Not.Null);
+            Assert.That(item.Id, Is.EqualTo(species));
+            Assert.That(item.AverageWeight, Is.EqualTo(0.5m));
+            Assert.That(item.Counter, Is.EqualTo(2));
         }
     }
 }
